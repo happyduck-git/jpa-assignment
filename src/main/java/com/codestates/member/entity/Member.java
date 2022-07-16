@@ -1,9 +1,11 @@
 package com.codestates.member.entity;
 
 import com.codestates.order.entity.Order;
+import com.codestates.stamp.Stamp;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -16,7 +18,7 @@ import java.util.List;
 @Entity
 public class Member {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long memberId;
 
     @Column(nullable = false, updatable = false, unique = true)
@@ -39,8 +41,12 @@ public class Member {
     @Column(nullable = false, name = "LAST_MODIFIED_AT")
     private LocalDateTime modifiedAt = LocalDateTime.now();
 
+
     @OneToMany(mappedBy = "member")
     private List<Order> orders = new ArrayList<>();
+
+    @OneToOne(mappedBy = "member",cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    private Stamp stamp;
 
     public Member(String email) {
         this.email = email;
@@ -51,10 +57,25 @@ public class Member {
         this.name = name;
         this.phone = phone;
     }
-
-    public void addOrder(Order order) {
+    public void setOrder(Order order) {
         orders.add(order);
+        if (order.getMember() != this) {
+            order.setMember(this);
+        }
     }
+
+        public void setStamp(Stamp stamp) {
+        this.stamp = stamp;
+        if (stamp.getMember() != this) {
+            stamp.setMember(this);
+        }
+    }
+
+//    public void addOrder(Order order) {
+//        orders.add(order);
+//    }
+//
+//    public void addStamp(Stamp stamp) { this.stamp = stamp; }
 
     // 추가 된 부분
     public enum MemberStatus {
@@ -68,5 +89,10 @@ public class Member {
         MemberStatus(String status) {
            this.status = status;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Member Entity -> Name: " + name + ", Member Id: " + memberId;
     }
 }

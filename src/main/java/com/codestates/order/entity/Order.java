@@ -6,7 +6,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -26,14 +29,36 @@ public class Order {
     @Column(nullable = false, name = "LAST_MODIFIED_AT")
     private LocalDateTime modifiedAt = LocalDateTime.now();
 
+    @Column(nullable = false)
+    @Min(1)
+    private int quantity;
+
     @ManyToOne
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
+    private List<OrderCoffee> orderCoffeeList = new ArrayList<>();
+
+
+    public Order(int quantity) {
+        this.quantity = quantity;
+    }
 
     public void addMember(Member member) {
         this.member = member;
     }
 
+//    public void addOrderCoffeeToList(OrderCoffee orderCoffee) {
+//        orderCoffeeList.add(orderCoffee);
+//    }
+
+    public void addOrderCoffeeToList(OrderCoffee orderCoffee) {
+        this.orderCoffeeList.add(orderCoffee);
+        if (orderCoffee.getOrder() != this) {
+            orderCoffee.addOrder(this);
+        }
+    }
     public enum OrderStatus {
         ORDER_REQUEST(1, "주문 요청"),
         ORDER_CONFIRM(2, "주문 확정"),
@@ -50,5 +75,11 @@ public class Order {
             this.stepNumber = stepNumber;
             this.stepDescription = stepDescription;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Order -> Order Id: " + orderId + " , Order quantity " + quantity + ", OrderCoffees " +
+                orderCoffeeList;
     }
 }

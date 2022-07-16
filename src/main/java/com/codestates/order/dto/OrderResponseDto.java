@@ -2,6 +2,7 @@ package com.codestates.order.dto;
 
 import com.codestates.member.entity.Member;
 import com.codestates.order.entity.Order;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 

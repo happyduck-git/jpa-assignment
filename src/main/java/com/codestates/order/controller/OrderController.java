@@ -1,5 +1,8 @@
 package com.codestates.order.controller;
 
+import com.codestates.order.dto.OrderResponseDto;
+import com.codestates.order.entity.OrderCoffee;
+import com.codestates.coffee.entity.Coffee;
 import com.codestates.coffee.service.CoffeeService;
 import com.codestates.response.MultiResponseDto;
 import com.codestates.response.SingleResponseDto;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -37,12 +41,22 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity postOrder(@Valid @RequestBody OrderPostDto orderPostDto) {
-        Order order = orderService.createOrder(mapper.orderPostDtoToOrder(orderPostDto));
+        System.out.println("Order Controller (OrderPostDto): " + orderPostDto);
+        Order mappedOrder = mapper.orderPostDtoToOrder(orderPostDto);
+        System.out.println("Order Controller (mapped): " + mappedOrder);
+        Order savedOrder = orderService.createOrder(mappedOrder);
+        System.out.println("Order Controller (saved): " + savedOrder);
 
         // TODO JPA 기능에 맞춰서 회원이 주문한 커피 정보를 ResponseEntity에 포함 시키세요.
+        List<OrderCoffee> orderCoffeeList = savedOrder.getOrderCoffeeList();
+
+        List<Coffee> coffeeList = orderCoffeeList.stream()
+                .map(orderCoffee -> orderCoffee.getCoffee())
+                .collect(Collectors.toList());
+
 
         return new ResponseEntity<>(
-                new SingleResponseDto<>(mapper.orderToOrderResponseDto(order, null)),
+                new SingleResponseDto<>(mapper.orderToOrderResponseDto(savedOrder, coffeeList)),
                 HttpStatus.CREATED);
     }
 
@@ -58,14 +72,21 @@ public class OrderController {
                 new SingleResponseDto<>(mapper.orderToOrderResponseDto(order, null))
                 , HttpStatus.OK);
     }
+
     @GetMapping("/{order-id}")
     public ResponseEntity getOrder(@PathVariable("order-id") @Positive long orderId) {
         Order order = orderService.findOrder(orderId);
 
+        System.out.println(order);
+
         // TODO JPA 기능에 맞춰서 회원이 주문한 커피 정보를 ResponseEntity에 포함 시키세요.
+        List<OrderCoffee> orderCoffeeList = order.getOrderCoffeeList();
+        List<Coffee> coffees = orderCoffeeList.stream()
+                .map(orderCoffee -> orderCoffee.getCoffee())
+                .collect(Collectors.toList());
 
         return new ResponseEntity<>(
-                new SingleResponseDto<>(mapper.orderToOrderResponseDto(order, null)),
+                new SingleResponseDto<>(mapper.orderToOrderResponseDto(order, coffees)),
                 HttpStatus.OK);
     }
 

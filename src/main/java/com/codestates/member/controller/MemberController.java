@@ -7,6 +7,7 @@ import com.codestates.member.dto.MemberPostDto;
 import com.codestates.member.entity.Member;
 import com.codestates.member.mapper.MemberMapper;
 import com.codestates.member.service.MemberService;
+import com.codestates.stamp.Stamp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -39,8 +40,17 @@ public class MemberController {
 
     @PostMapping
     public ResponseEntity postMember(@Valid @RequestBody MemberPostDto memberDto) {
+
+        Member mappedMember = mapper.memberPostDtoToMember(memberDto);
+        mappedMember.setStamp(new Stamp());
+
         Member member =
-                memberService.createMember(mapper.memberPostDtoToMember(memberDto));
+                memberService.createMember(mappedMember);
+
+//        member.getStamp().setStampCount(100);
+        System.out.println(member.getStamp().getStampId());
+//        System.out.println(member.getStamp().getStampCount());
+
         return new ResponseEntity<>(
                 new SingleResponseDto<>(mapper.memberToMemberResponseDto(member)),
                 HttpStatus.CREATED);

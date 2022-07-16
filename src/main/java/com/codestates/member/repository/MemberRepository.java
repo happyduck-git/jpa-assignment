@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> { // 수정된 부분
     Optional<Member> findByEmail(String email);
+
 }

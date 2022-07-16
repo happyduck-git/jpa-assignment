@@ -71,7 +71,7 @@ public class CoffeeService {
         return findCoffee;
     }
 
-    private void verifyExistCoffee(String coffeeCode) {
+    public void verifyExistCoffee(String coffeeCode) {
         Optional<Coffee> coffee = coffeeRepository.findByCoffeeCode(coffeeCode);
         if(coffee.isPresent())
             throw new BusinessLogicException(ExceptionCode.COFFEE_CODE_EXISTS);

@@ -1,5 +1,6 @@
 package com.codestates;
 
+import com.codestates.order.entity.Order;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
