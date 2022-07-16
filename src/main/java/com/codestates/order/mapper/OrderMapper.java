@@ -10,6 +10,9 @@ import org.mapstruct.Mapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+/*
+코멘트 지우기 전 상태
+ */
 
 @Mapper(componentModel = "spring")
 public interface OrderMapper {
