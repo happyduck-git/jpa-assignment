@@ -30,11 +30,6 @@ public class OrderCoffee {
     @JoinColumn(name = "COFFEE_ID")
     private Coffee coffee;
 
-
-//    public OrderCoffee(int quantity) {
-//        this.quantity = quantity;
-//    }
-
     public void addOrder(Order order) {
         this.order = order;
         if (!this.order.getOrderCoffeeList().contains(this)) {
@@ -49,12 +44,6 @@ public class OrderCoffee {
         }
     }
 
-//    public void addOrder(Order order) {
-//        this.order = order;
-//    }
-//    public void addCoffee(Coffee coffee) {
-//        this.coffee = coffee;
-//    }
     public void addQuantity(Integer quantity) {this.quantity = quantity;}
 
     @Override

@@ -7,7 +7,6 @@ import com.codestates.order.entity.Order;
 import com.codestates.order.entity.OrderCoffee;
 import org.mapstruct.Mapper;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 /*
@@ -25,14 +24,6 @@ public interface OrderMapper {
 
         //List<OrderCoffee>
 
-        /* 내 코드 => 수정해보기*/
-//        List<OrderCoffee> orderCoffeeList = orderPostDto.getOrderCoffeeDtos().stream()
-//                .map(orderCoffeeDto -> orderCoffeeDtoToOrderCoffee(orderCoffeeDto))
-//                .collect(Collectors.toList());
-
-
-
-        //레퍼런스 코드
         List<OrderCoffee> orderCoffeeList = orderPostDto.getOrderCoffeeDtos().stream()
                 .map(orderCoffeeDto -> {
                     OrderCoffee orderCoffee = new OrderCoffee();
